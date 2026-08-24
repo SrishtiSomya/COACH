@@ -9,14 +9,12 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 const FONTS_LINK =
   "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap";
 
-const PLATFORMS = ["Codeforces", "LeetCode", "AtCoder", "CodeChef", "HackerRank"];
+const PLATFORMS = ["Codeforces", "LeetCode", "AtCoder"];
 
 const PLATFORM_META = {
   Codeforces: { short: "CF", handle: "srishtisomya", color: "#5EB1F0" },
   LeetCode: { short: "LC", handle: "IoIvnVl8JP", color: "#F5A623" },
   AtCoder: { short: "AC", handle: "srishtisomya", color: "#6FE0C0" },
-  CodeChef: { short: "CC", handle: "srishti_somya", color: "#C97BE0" },
-  HackerRank: { short: "HR", handle: "srishtisomya21", color: "#5FDD8F" },
 };
 
 // Codeforces-authentic rating -> color scale, reused for every platform's
@@ -74,17 +72,6 @@ const SEED = {
   AtCoder: [
     { name: "ABC Practice A - PizzaCutter Rating (browse)", code: "PRC", rating: 800, topics: ["warm-up"], url: "https://atcoder.jp/contests/abc/tasks?f.LangName=ja" },
   ],
-  CodeChef: [
-    { name: "Life, the Universe, and Everything", code: "TEST", rating: 800, topics: ["implementation"], url: "https://www.codechef.com/problems/TEST" },
-    { name: "Add Two Numbers", code: "FLOW001", rating: 800, topics: ["math"], url: "https://www.codechef.com/problems/FLOW001" },
-  ],
-  HackerRank: [
-    { name: "Solve Me First", code: "SMF", rating: 800, topics: ["warm-up"], url: "https://www.hackerrank.com/challenges/solve-me-first/problem" },
-    { name: "Simple Array Sum", code: "SAS", rating: 850, topics: ["array"], url: "https://www.hackerrank.com/challenges/simple-array-sum/problem" },
-    { name: "Sock Merchant", code: "SM", rating: 1000, topics: ["hash table"], url: "https://www.hackerrank.com/challenges/sock-merchant/problem" },
-    { name: "Two Strings", code: "TS", rating: 1050, topics: ["strings", "hash table"], url: "https://www.hackerrank.com/challenges/two-strings/problem" },
-    { name: "Minimum Swaps 2", code: "MS2", rating: 1250, topics: ["greedy", "graph"], url: "https://www.hackerrank.com/challenges/minimum-swaps-2/problem" },
-  ],
 };
 
 // Fallback difficulty-filtered browse links, used when no seed problem
@@ -95,10 +82,6 @@ function browseUrl(platform, rating) {
       return `https://codeforces.com/problemset?order=BY_RATING_ASC&tags=&min=${rating}&max=${rating + 200}`;
     case "AtCoder":
       return "https://kenkoooo.com/atcoder/#/table/";
-    case "CodeChef":
-      return "https://www.codechef.com/practice";
-    case "HackerRank":
-      return "https://www.hackerrank.com/domains";
     case "LeetCode":
       return "https://leetcode.com/problemset/";
     default:
@@ -107,7 +90,7 @@ function browseUrl(platform, rating) {
 }
 
 const DEFAULT_SETTINGS = {
-  weights: { Codeforces: 40, LeetCode: 25, AtCoder: 20, CodeChef: 10, HackerRank: 5 },
+  weights: { Codeforces: 50, LeetCode: 30, AtCoder: 20 },
   dailyCount: 1,
   boost: 15, // % above demonstrated ability
   avoidSolved: true,
@@ -117,8 +100,6 @@ const DEFAULT_ABILITY = {
   Codeforces: 1250,
   LeetCode: 1350,
   AtCoder: 900,
-  CodeChef: 900,
-  HackerRank: 950,
 };
 
 function todayKey() {
@@ -759,8 +740,8 @@ export default function App() {
 
         <div style={{ marginTop: 24, fontSize: 12, color: "#5C6478", lineHeight: 1.6 }}>
           Runs entirely in this preview: your settings, ability estimate, and solve history are saved to your account and
-          persist between visits. Live sync only works for Codeforces (and only when the network call succeeds) — LeetCode,
-          AtCoder, CodeChef, and HackerRank don't allow that kind of direct access from a browser page, so their picks come
+          persist between visits. Live sync only works for Codeforces (and only when the network call succeeds) — LeetCode
+          and AtCoder don't allow that kind of direct access from a browser page, so their picks come
           from a small curated set plus a filtered "browse" link when nothing fits. Mark problems solved yourself for now.
         </div>
       </div>

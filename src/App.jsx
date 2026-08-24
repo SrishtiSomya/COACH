@@ -70,7 +70,14 @@ const SEED = {
     { name: "Merge k Sorted Lists", code: "23", rating: 1950, topics: ["heap", "linked list"], url: "https://leetcode.com/problems/merge-k-sorted-lists/" },
   ],
   AtCoder: [
-    { name: "ABC Practice A - PizzaCutter Rating (browse)", code: "PRC", rating: 800, topics: ["warm-up"], url: "https://atcoder.jp/contests/abc/tasks?f.LangName=ja" },
+    { name: "Product", code: "ABC086A", rating: 800, topics: ["math"], url: "https://atcoder.jp/contests/abc086/tasks/abc086_a" },
+    { name: "Placing Marbles", code: "ABC081A", rating: 800, topics: ["implementation"], url: "https://atcoder.jp/contests/abc081/tasks/abc081_a" },
+    { name: "Shift only", code: "ABC081B", rating: 900, topics: ["implementation", "math"], url: "https://atcoder.jp/contests/abc081/tasks/abc081_b" },
+    { name: "Coins", code: "ABC087B", rating: 1000, topics: ["brute force"], url: "https://atcoder.jp/contests/abc087/tasks/abc087_b" },
+    { name: "Some Sums", code: "ABC083B", rating: 1000, topics: ["math"], url: "https://atcoder.jp/contests/abc083/tasks/abc083_b" },
+    { name: "Card Game for Two", code: "ABC088B", rating: 1100, topics: ["greedy", "sorting"], url: "https://atcoder.jp/contests/abc088/tasks/abc088_b" },
+    { name: "Kagami Mochi", code: "ABC085B", rating: 1200, topics: ["data structures"], url: "https://atcoder.jp/contests/abc085/tasks/abc085_b" },
+    { name: "Otoshidama", code: "ABC085C", rating: 1300, topics: ["brute force"], url: "https://atcoder.jp/contests/abc085/tasks/abc085_c" },
   ],
 };
 
@@ -126,6 +133,35 @@ function pickProblem(platform, targetRating, solvedCodes) {
   return nearTies[Math.floor(Math.random() * nearTies.length)];
 }
 
+function generateMockHistory() {
+  const hist = {};
+  const end = new Date();
+  const start = new Date();
+  start.setDate(end.getDate() - 118);
+  
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const key = d.toISOString().slice(0, 10);
+    // 85% chance of being active to create a dense green graph
+    if (Math.random() < 0.85) {
+      // Typically 1-4 problems, occasionally up to 7
+      const count = Math.floor(Math.random() * 4) + 1 + (Math.random() > 0.8 ? 3 : 0);
+      const dayList = [];
+      for (let i = 0; i < count; i++) {
+        const p = PLATFORMS[Math.floor(Math.random() * PLATFORMS.length)];
+        dayList.push({
+          platform: p,
+          code: `mock-${key}-${i}`,
+          name: `Practice Problem ${i + 1}`,
+          rating: 800 + Math.floor(Math.random() * 800),
+          outcome: Math.random() > 0.05 ? "solved" : "skipped", 
+        });
+      }
+      hist[key] = dayList;
+    }
+  }
+  return hist;
+}
+
 function useStorage() {
   const get = useCallback(async (key, fallback) => {
     try {
@@ -166,12 +202,20 @@ export default function App() {
   // ---- load persisted state ----
   useEffect(() => {
     (async () => {
-      const [s, a, h, t] = await Promise.all([
+      const [s, a, hRaw, t] = await Promise.all([
         get("cp-settings", DEFAULT_SETTINGS),
         get("cp-ability", DEFAULT_ABILITY),
         get("cp-history", {}),
         get(`cp-today:${todayKey()}`, null),
       ]);
+      
+      let h = hRaw;
+      // Pre-fill with mock data if history is basically empty
+      if (!h || Object.keys(h).length <= 1) {
+        h = { ...generateMockHistory(), ...h };
+        set("cp-history", h);
+      }
+      
       setSettings(s);
       setAbility(a);
       setHistory(h);
